@@ -1,16 +1,18 @@
 NEXTJS : proper
 
 
-
 You are a senior full-stack developer with deep expertise in Next.js, 
 React, TypeScript, Tailwind CSS, and modern frontend architecture.
 
-I am giving you an HTML file that contains a complete UI — including 
-structure, styling (CSS), and behavior (JavaScript/animations).
+I am giving you:
+1. An HTML file that contains a complete UI — including structure, 
+   styling (CSS), and behavior (JavaScript/animations)
+2. A folder of assets — including images, icons, fonts, videos, 
+   SVGs, and any other media files used in the project
 
 Your task is to convert and rebuild this ENTIRE HTML file into a 
 production-grade Next.js application — professionally, cleanly, 
-and completely.
+and completely — using the exact assets I have provided.
 
 ---
 
@@ -41,6 +43,65 @@ tech company would architect it from scratch.
   ├── lib/              → utilities & helpers
   ├── constants/        → config, static data
   └── types/            → TypeScript interfaces
+
+  public/
+  ├── images/           → all raster images (.jpg, .png, .webp)
+  ├── icons/            → all icon files (.svg, .ico, .png)
+  ├── fonts/            → any local font files
+  ├── videos/           → any video files (.mp4, .webm)
+  └── assets/           → any other static assets
+
+---
+
+## 🗂️ ASSETS HANDLING (CRITICAL)
+
+I have provided you with the original assets folder alongside 
+the HTML file. Follow these rules strictly:
+
+### Images
+- Map EVERY image referenced in the HTML to its exact file 
+  from the provided assets folder
+- Place all images in /public/images/ maintaining original 
+  subfolder structure if any
+- Use Next.js <Image /> component for ALL images with:
+  → Correct src path pointing to /public folder
+  → Exact or estimated width and height
+  → Descriptive alt text based on context
+  → priority={true} for any above-the-fold / hero images
+  → loading="lazy" for below-the-fold images
+
+### SVGs
+- Inline critical SVGs (icons, logos) directly as React 
+  components in /components/ui/icons/
+- Place decorative/background SVGs in /public/icons/
+- Never use <img> for SVGs that need color control — 
+  convert them to React SVG components with fill="currentColor"
+
+### Fonts
+- If fonts are local files in assets → move to /public/fonts/ 
+  and load via next/font/local in layout.tsx
+- If fonts are Google Fonts → replace with next/font/google
+- Never use a raw <link> tag for fonts in Next.js
+
+### Videos
+- Place all video files in /public/videos/
+- Use HTML5 <video> tag with proper attributes:
+  → autoPlay, muted, loop, playsInline for background videos
+  → controls for user-facing videos
+  → Add poster attribute using a frame image from assets
+
+### Icons
+- If the project uses icon libraries (Font Awesome, etc.) 
+  replace with lucide-react or react-icons
+- Match every icon visually to its original
+- Install: npm install lucide-react
+
+### Asset Path Mapping
+- Audit EVERY src=, href=, url() reference in the original HTML
+- Map each one to its corresponding file in the provided assets
+- If an asset is missing, note it clearly as:
+  // MISSING ASSET: original path was "assets/xyz.png" 
+  // — replace with correct file
 
 ---
 
@@ -104,16 +165,25 @@ in the original HTML.
 
 ---
 
-## 🖼️ ASSETS & MEDIA
+## 🖼️ NEXT.JS IMAGE COMPONENT RULES
 
-- Move all image paths to /public folder
-- Use Next.js <Image /> component for all images with:
-  → Proper width and height
-  → alt text
-  → priority flag for above-the-fold images
-- Use next/font for any Google Fonts used
-- Replace all <a href> external links with Next.js <Link /> 
-  where appropriate
+Every image in the project must follow this pattern:
+
+import Image from 'next/image'
+
+<Image
+  src="/images/filename.jpg"       ← exact path in /public
+  alt="descriptive alt text"       ← always meaningful
+  width={1200}                     ← actual or estimated px
+  height={800}                     ← actual or estimated px
+  priority={true}                  ← only for hero/above-fold
+  className="..."                  ← Tailwind classes
+/>
+
+For background images that must be CSS-driven:
+- Use Tailwind bg- utilities with custom values in config
+- Or use a wrapper div with a Next.js <Image> set to fill + 
+  object-cover with position="relative" on parent
 
 ---
 
@@ -147,6 +217,8 @@ Before finalizing, ensure:
 - [ ] Zero TypeScript errors
 - [ ] Zero ESLint warnings
 - [ ] All animations work identically to the original
+- [ ] All assets correctly referenced and placed in /public
+- [ ] No broken image paths or missing asset references
 - [ ] Fully responsive (mobile → tablet → desktop)
 - [ ] No hydration errors (SSR-safe)
 - [ ] All images use <Image /> with required props
@@ -161,18 +233,21 @@ Before finalizing, ensure:
 
 Provide the following in order:
 
-1. Complete folder structure (tree view)
-2. package.json with all dependencies
-3. tailwind.config.ts with all custom tokens
-4. tsconfig.json
-5. next.config.ts
-6. src/app/layout.tsx
-7. src/app/globals.css
-8. src/app/page.tsx
-9. Every component file (sections + ui)
-10. Every custom hook file
-11. Every constants / types file
-12. Brief explanation of any key architectural decision made
+1. Complete folder structure (tree view) including all 
+   assets mapped to /public
+2. Asset mapping table:
+   ORIGINAL PATH → NEW /public PATH → COMPONENT USED IN
+3. package.json with all dependencies
+4. tailwind.config.ts with all custom tokens
+5. tsconfig.json
+6. next.config.ts
+7. src/app/layout.tsx
+8. src/app/globals.css
+9. src/app/page.tsx
+10. Every component file (sections + ui)
+11. Every custom hook file
+12. Every constants / types file
+13. Brief explanation of any key architectural decision made
 
 ---
 
@@ -183,9 +258,11 @@ Provide the following in order:
 - Do NOT leave any placeholder like "// add logic here"
 - Do NOT use class components — hooks only
 - Do NOT use any as a TypeScript type
+- Do NOT change or rename any provided asset files
+- Do NOT use placeholder images — use the exact assets provided
 - Every file must be complete and immediately runnable
-- The final result must be a pixel-perfect, animation-perfect 
-  replica of the original — built to production standard
+- The final result must be a pixel-perfect, animation-perfect, 
+  asset-perfect replica of the original — built to production standard
 
-Now analyze the HTML file I am providing and convert it 
-into the complete Next.js codebase.
+Now analyze the HTML file and all assets I am providing 
+and convert everything into the complete Next.js codebase.
